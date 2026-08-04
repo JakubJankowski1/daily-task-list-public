@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Prosta lista codziennych zadań">
+  <title>Moje zadania</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <div class="brand-mark" aria-hidden="true">&#10003;</div>
+      <div>
+        <p class="eyebrow">DZISIAJ</p>
+        <h1>Moje zadania</h1>
+      </div>
+    </header>
+
+    <section class="task-panel" aria-labelledby="task-heading">
+      <h2 id="task-heading" class="visually-hidden">Lista zadań</h2>
+
+      <form id="task-form" class="task-form">
+        <div class="task-form-main">
+          <label class="visually-hidden" for="task-input">Nowe zadanie</label>
+          <input
+            id="task-input"
+            name="task"
+            type="text"
+            placeholder="Co chcesz dziś zrobić?"
+            maxlength="120"
+            autocomplete="off"
+            required
+          >
+          <button class="add-button" type="submit">Dodaj</button>
+        </div>
+
+        <div class="task-options">
+          <label class="form-field" for="task-due-at">
+            <span>Termin <small>(opcjonalnie)</small></span>
+            <input id="task-due-at" name="dueAt" type="datetime-local">
+          </label>
+
+          <label class="form-field" for="task-priority">
+            <span>Priorytet</span>
+            <select id="task-priority" name="priority">
+              <option value="low">Niski</option>
+              <option value="normal" selected>Normalny</option>
+              <option value="high">Wysoki</option>
+            </select>
+          </label>
+        </div>
+      </form>
+
+      <div class="task-search">
+        <label class="search-field" for="task-search">
+          <span class="visually-hidden">Szukaj zadań</span>
+          <input
+            id="task-search"
+            type="search"
+            placeholder="Szukaj zadań"
+            autocomplete="off"
+          >
+        </label>
+        <button
+          id="clear-search"
+          class="clear-search-button"
+          type="button"
+          aria-label="Wyczyść wyszukiwanie"
+          title="Wyczyść wyszukiwanie"
+          hidden
+        >
+          &times;
+        </button>
+      </div>
+
+      <div class="task-filters" role="group" aria-label="Filtruj zadania">
+        <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">
+          Wszystkie
+        </button>
+        <button class="filter-button" type="button" data-filter="active" aria-pressed="false">
+          Aktywne
+        </button>
+        <button class="filter-button" type="button" data-filter="completed" aria-pressed="false">
+          Wykonane
+        </button>
+      </div>
+
+      <div class="task-summary" aria-live="polite">
+        <span id="task-count">Brak zadań</span>
+        <button id="clear-completed" class="text-button" type="button" hidden>
+          Usuń wykonane
+        </button>
+      </div>
+
+      <ul id="task-list" class="task-list" aria-label="Codzienne zadania"></ul>
+
+      <div id="empty-state" class="empty-state">
+        <div class="empty-icon" aria-hidden="true">&#10003;</div>
+        <p id="empty-title">Lista jest pusta</p>
+        <span id="empty-description">Dodaj pierwsze zadanie powyżej.</span>
+      </div>
+    </section>
+
+    <p id="storage-note" class="storage-note" role="status">
+      Zadania są zapisywane w tej przeglądarce.
+    </p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
