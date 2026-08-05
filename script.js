@@ -87,17 +87,6 @@ function saveTasks() {
   }
 }
 
-function formatTaskCount(count) {
-  if (count === 1) return "1 zadanie do wykonania";
-
-  const lastDigit = count % 10;
-  const lastTwoDigits = count % 100;
-  const usesZadania = lastDigit >= 2 && lastDigit <= 4
-    && (lastTwoDigits < 12 || lastTwoDigits > 14);
-
-  return `${count} ${usesZadania ? "zadania" : "zadań"} do wykonania`;
-}
-
 function formatDueAt(dueAt) {
   return new Intl.DateTimeFormat("pl-PL", {
     dateStyle: "medium",
@@ -210,9 +199,7 @@ function updateSummary() {
   const remainingCount = tasks.filter((task) => !task.completed).length;
   const completedCount = tasks.length - remainingCount;
 
-  taskCount.textContent = tasks.length === 0
-    ? "Brak zadań"
-    : formatTaskCount(remainingCount);
+  taskCount.textContent = `Aktywne: ${remainingCount} • Wykonane: ${completedCount}`;
   clearCompletedButton.hidden = completedCount === 0;
 }
 
