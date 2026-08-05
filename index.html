@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Prosta lista codziennych zadań">
+  <meta name="description" content="Prosta lista codziennych zadań z harmonogramem">
   <title>Moje zadania</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -18,9 +18,9 @@
     </header>
 
     <section class="task-panel" aria-labelledby="task-heading">
-      <h2 id="task-heading" class="visually-hidden">Lista zadań</h2>
+      <h2 id="task-heading" class="visually-hidden">Zarządzanie zadaniami</h2>
 
-      <form id="task-form" class="task-form">
+      <form id="task-form" class="task-form" novalidate>
         <div class="task-form-main">
           <label class="visually-hidden" for="task-input">Nowe zadanie</label>
           <input
@@ -36,12 +36,17 @@
         </div>
 
         <div class="task-options">
-          <label class="form-field" for="task-due-at">
-            <span>Termin <small>(opcjonalnie)</small></span>
-            <input id="task-due-at" name="dueAt" type="datetime-local">
+          <label class="form-field" for="task-start-at">
+            <span>Rozpoczęcie <small>(opcjonalnie)</small></span>
+            <input id="task-start-at" name="startAt" type="datetime-local" aria-describedby="task-date-error">
           </label>
 
-          <label class="form-field" for="task-priority">
+          <label class="form-field" for="task-due-at">
+            <span>Zakończenie <small>(opcjonalnie)</small></span>
+            <input id="task-due-at" name="dueAt" type="datetime-local" aria-describedby="task-date-error">
+          </label>
+
+          <label class="form-field priority-field" for="task-priority">
             <span>Priorytet</span>
             <select id="task-priority" name="priority">
               <option value="low">Niski</option>
@@ -50,17 +55,13 @@
             </select>
           </label>
         </div>
+        <p id="task-date-error" class="form-error" role="alert" hidden></p>
       </form>
 
       <div class="task-search">
         <label class="search-field" for="task-search">
           <span class="visually-hidden">Szukaj zadań</span>
-          <input
-            id="task-search"
-            type="search"
-            placeholder="Szukaj zadań"
-            autocomplete="off"
-          >
+          <input id="task-search" type="search" placeholder="Szukaj zadań" autocomplete="off">
         </label>
         <button
           id="clear-search"
@@ -69,42 +70,61 @@
           aria-label="Wyczyść wyszukiwanie"
           title="Wyczyść wyszukiwanie"
           hidden
-        >
-          &times;
-        </button>
+        >&times;</button>
       </div>
 
       <div class="task-filters" role="group" aria-label="Filtruj zadania">
-        <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">
-          Wszystkie
-        </button>
-        <button class="filter-button" type="button" data-filter="active" aria-pressed="false">
-          Aktywne
-        </button>
-        <button class="filter-button" type="button" data-filter="completed" aria-pressed="false">
-          Wykonane
-        </button>
+        <button class="filter-button active" type="button" data-filter="all" aria-pressed="true">Wszystkie</button>
+        <button class="filter-button" type="button" data-filter="active" aria-pressed="false">Aktywne</button>
+        <button class="filter-button" type="button" data-filter="completed" aria-pressed="false">Wykonane</button>
+      </div>
+
+      <div class="view-tabs" role="tablist" aria-label="Widok zadań">
+        <button id="list-tab" class="view-tab active" type="button" role="tab" aria-selected="true" aria-controls="list-panel" tabindex="0">Lista</button>
+        <button id="timeline-tab" class="view-tab" type="button" role="tab" aria-selected="false" aria-controls="timeline-panel" tabindex="-1">Harmonogram</button>
       </div>
 
       <div class="task-summary" aria-live="polite">
         <span id="task-count">Aktywne: 0 &bull; Wykonane: 0</span>
-        <button id="clear-completed" class="text-button" type="button" hidden>
-          Usuń wykonane
-        </button>
+        <button id="clear-completed" class="text-button" type="button" hidden>Usuń wykonane</button>
       </div>
 
-      <ul id="task-list" class="task-list" aria-label="Codzienne zadania"></ul>
+      <section id="list-panel" role="tabpanel" aria-labelledby="list-tab">
+        <ul id="task-list" class="task-list" aria-label="Codzienne zadania"></ul>
 
-      <div id="empty-state" class="empty-state">
-        <div class="empty-icon" aria-hidden="true">&#10003;</div>
-        <p id="empty-title">Lista jest pusta</p>
-        <span id="empty-description">Dodaj pierwsze zadanie powyżej.</span>
-      </div>
+        <div id="empty-state" class="empty-state">
+          <div class="empty-icon" aria-hidden="true">&#10003;</div>
+          <p id="empty-title">Lista jest pusta</p>
+          <span id="empty-description">Dodaj pierwsze zadanie powyżej.</span>
+        </div>
+      </section>
+
+      <section id="timeline-panel" class="timeline-panel" role="tabpanel" aria-labelledby="timeline-tab" hidden>
+        <div class="timeline-toolbar">
+          <div>
+            <h2>Oś czasu</h2>
+            <p>Zakresy zadań w wybranym roku</p>
+          </div>
+          <div class="year-controls" role="group" aria-label="Wybierz rok">
+            <button id="previous-year" class="icon-button" type="button" aria-label="Poprzedni rok" title="Poprzedni rok">&#8592;</button>
+            <label class="visually-hidden" for="timeline-year">Rok harmonogramu</label>
+            <input id="timeline-year" type="number" min="1" max="9999" inputmode="numeric">
+            <button id="next-year" class="icon-button" type="button" aria-label="Następny rok" title="Następny rok">&#8594;</button>
+          </div>
+        </div>
+
+        <p id="timeline-skipped" class="timeline-skipped" aria-live="polite"></p>
+        <div id="timeline-scroll" class="timeline-scroll" tabindex="0" aria-label="Harmonogram zadań, przewijany poziomo">
+          <div id="timeline" class="timeline"></div>
+        </div>
+        <div id="timeline-empty" class="empty-state" hidden>
+          <p>Brak zadań w tym roku</p>
+          <span>Zmień rok, filtr albo uzupełnij daty zadania.</span>
+        </div>
+      </section>
     </section>
 
-    <p id="storage-note" class="storage-note" role="status">
-      Zadania są zapisywane w tej przeglądarce.
-    </p>
+    <p id="storage-note" class="storage-note" role="status">Zadania są zapisywane w tej przeglądarce.</p>
   </main>
 
   <script src="script.js"></script>

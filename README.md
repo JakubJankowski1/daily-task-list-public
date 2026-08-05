@@ -9,7 +9,9 @@ w czystym HTML, CSS i JavaScript, bez frameworków.
 - oznaczanie zadań jako wykonane,
 - filtry: Wszystkie, Aktywne i Wykonane,
 - wyszukiwanie zadań podczas wpisywania,
-- opcjonalny termin z datą i godziną,
+- opcjonalne rozpoczęcie i zakończenie z datą oraz godziną,
+- czas trwania i liczba dni pozostałych do terminu,
+- roczny harmonogram z paskami zakresów i przełączaniem lat,
 - priorytety: Niski, Normalny i Wysoki,
 - oznaczanie zadań zaległych,
 - inteligentne sortowanie,
@@ -33,8 +35,8 @@ Start-Process .\index.html
 ## Testy
 
 Testy przeglądarkowe korzystają z Playwrighta i Chrome. Sprawdzają między
-innymi dodawanie, filtrowanie, wyszukiwanie, edycję, sortowanie, `localStorage`
-oraz układ mobilny.
+innymi dodawanie, filtrowanie, wyszukiwanie, edycję, sortowanie, `localStorage`,
+walidację zakresów, obliczenia kalendarzowe, harmonogram oraz układ mobilny.
 
 Po zainstalowaniu Node.js i pnpm:
 
@@ -54,6 +56,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-tests.ps1
 Zadania są przechowywane lokalnie w przeglądarce pod kluczem `daily-tasks`.
 Aplikacja nie wysyła danych na serwer i nie synchronizuje ich między
 urządzeniami ani przeglądarkami.
+
+Starsze zadania bez daty rozpoczęcia są automatycznie uzupełniane o
+`startAt: null`. Istniejące terminy `dueAt`, w tym ich godziny, pozostają
+zachowane. Godzina decyduje o dokładnym momencie zaległości, natomiast liczba
+dni i położenie na harmonogramie wynikają wyłącznie z dat kalendarzowych.
 
 ## Struktura projektu
 
