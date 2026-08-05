@@ -91,6 +91,26 @@ test("filtry pokazują zadania bez usuwania ich z pamięci", async ({ page }) =>
   expect(await storedTasks(page)).toHaveLength(2);
 });
 
+test("licznik pokazuje aktywne i wykonane zadania", async ({ page }) => {
+  const counter = page.locator("#task-count");
+
+  await expect(counter).toHaveText("Aktywne: 0 • Wykonane: 0");
+  await addTask(page, "Pierwsze zadanie");
+  await addTask(page, "Drugie zadanie");
+  await expect(counter).toHaveText("Aktywne: 2 • Wykonane: 0");
+
+  await page.locator(".task-item", { hasText: "Pierwsze zadanie" })
+    .locator(".task-checkbox")
+    .check();
+  await expect(counter).toHaveText("Aktywne: 1 • Wykonane: 1");
+
+  await page.getByRole("button", { name: "Aktywne", exact: true }).click();
+  await expect(counter).toHaveText("Aktywne: 1 • Wykonane: 1");
+
+  await page.getByRole("button", { name: "Usuń wykonane" }).click();
+  await expect(counter).toHaveText("Aktywne: 1 • Wykonane: 0");
+});
+
 test("wyszukiwanie współpracuje z filtrami i nie zmienia localStorage", async ({ page }) => {
   await addTask(page, "Napisać raport");
   await addTask(page, "Zrobić zakupy");
