@@ -45,7 +45,7 @@ pnpm install
 pnpm test
 ```
 
-W środowisku Codexa testy można uruchomić bez osobnej instalacji:
+Po zainstalowaniu zależności testy można uruchomić również za pomocą skryptu PowerShell:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run-tests.ps1
